@@ -1,0 +1,63 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-07-11 16:07:59.622380",
+ "disabled": 1,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "frmdate",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "todate",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 2,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-08-11 18:49:19.623743",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Branches Monthly Cash & Visa",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "WITH\r\nWarehouseCTE AS (\r\n    SELECT \r\n        name AS warehouse_name,\r\n        default_in_transit_warehouse,\r\n        warehouse_type\r\n    FROM \r\n        `tabWarehouse`\r\n    WHERE \r\n        warehouse_type = '\u0641\u0631\u0639'\r\n),\r\nSalesInvoices AS (\r\n    SELECT\r\n        name,\r\n        set_warehouse,\r\n        is_return,\r\n        net_total,\r\n        delivery_type,\r\n        _order_type,\r\n        insurance_contract,\r\n        docstatus -- Ensure docstatus is selected here\r\n    FROM\r\n        `tabSales Invoice`\r\n    WHERE\r\n        docstatus = 1 -- Apply docstatus filter here\r\n        AND update_stock = 1\r\n        AND creation BETWEEN %(frmdate)s AND %(todate)s\r\n),\r\nReceivedPayments AS (\r\n    SELECT\r\n        LPER.reference_name,\r\n        SUM(LPER.allocated_amount) AS total_received\r\n    FROM\r\n        `tabPayment Entry Reference` LPER\r\n    INNER JOIN `tabPayment Entry` LPE ON LPER.parent = LPE.name\r\n    WHERE\r\n        LPER.docstatus = 1\r\n        AND LPE.payment_type = 'Receive'\r\n        AND LPE.paid_to_account_type = 'Bank'\r\n    GROUP BY\r\n        LPER.reference_name\r\n),\r\nPaidPayments AS (\r\n    SELECT\r\n        LPER.reference_name,\r\n        SUM(LPER.allocated_amount) AS total_paid\r\n    FROM\r\n        `tabPayment Entry Reference` LPER\r\n    INNER JOIN `tabPayment Entry` LPE ON LPER.parent = LPE.name\r\n    WHERE\r\n        LPER.docstatus = 1\r\n        AND LPE.payment_type = 'Pay'\r\n        AND LPE.paid_to_account_type = 'Bank'\r\n    GROUP BY\r\n        LPER.reference_name\r\n),\r\nAggregatedSales AS (\r\n    SELECT\r\n        set_warehouse,\r\n        SUM(CASE WHEN is_return = 0  THEN net_total ELSE 0 END) AS total_sales,\r\n        SUM(CASE WHEN is_return = 1  THEN net_total ELSE 0 END) AS total_returns\r\n    FROM\r\n        SalesInvoices\r\n        where  SalesInvoices.docstatus =1\r\n    GROUP BY\r\n        set_warehouse\r\n),\r\nSalesPayments AS (\r\n    SELECT\r\n        SI.set_warehouse,\r\n        SUM(CASE WHEN SI.is_return = 0  THEN RP.total_received ELSE 0 END) AS total_received,\r\n        SUM(CASE WHEN SI.is_return = 1  THEN PP.total_paid ELSE 0 END) AS total_paid\r\n    FROM \r\n        SalesInvoices SI \r\n        \r\n    LEFT JOIN ReceivedPayments RP ON SI.name = RP.reference_name\r\n    LEFT JOIN PaidPayments PP ON SI.name = PP.reference_name\r\n    where SI.docstatus=1\r\n    GROUP BY\r\n        SI.set_warehouse\r\n)\r\nSELECT \r\n    W.warehouse_name AS `Branch`,\r\n    COALESCE(ASales.total_sales, 0) - COALESCE(ASales.total_returns, 0) - \r\n    COALESCE(SP.total_received, 0) - COALESCE(SP.total_paid, 0) AS `Cash Sales`,\r\n    COALESCE(SP.total_received, 0) - COALESCE(SP.total_paid, 0) AS `Visa Sales`\r\nFROM \r\n    WarehouseCTE W\r\nLEFT JOIN AggregatedSales AS ASales ON W.warehouse_name = ASales.set_warehouse\r\nLEFT JOIN SalesPayments AS SP ON W.warehouse_name = SP.set_warehouse;\r\n",
+ "ref_doctype": "Warehouse",
+ "report_name": "Branches Monthly Cash & Visa",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "Manufacturing Manager"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Supplier & Item & Purchase & Promotion"
+  },
+  {
+   "role": "Branch Ghobrial"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Purchase Manager"
+  }
+ ]
+}

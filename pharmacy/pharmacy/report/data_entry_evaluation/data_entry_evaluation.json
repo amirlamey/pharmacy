@@ -1,0 +1,54 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-10-17 01:37:04.220361",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "frmdate",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "todate",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-10-17 01:37:04.220361",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Data Entry Evaluation",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "WITH EmployeeLogs AS (\r\n        SELECT \r\n            employee_id,\r\n            (SELECT employee_name FROM `tabEmployee` WHERE `tabEmployee`.`name` = employee_id) AS employee_name,\r\n            branch,\r\n            log_type_in,\r\n            date_log_in,\r\n            log_type_out,\r\n            date_log_out,\r\n            TIMESTAMPDIFF(HOUR, date_log_in, date_log_out) AS hours,\r\n            MOD(TIMESTAMPDIFF(MINUTE, date_log_in, date_log_out), 60) AS minutes\r\n        FROM \r\n            `tabBranches Check IN OUT`\r\n        WHERE\r\n            date_log_in BETWEEN %(frmdate)s AND %(todate)s\r\n        ORDER BY \r\n            employee_id, date_log_in\r\n    ),\r\n    EmployeeTotals AS (\r\n        SELECT \r\n            employee_id,\r\n            (SELECT employee_name FROM `tabEmployee` WHERE `tabEmployee`.`name` = employee_id) AS employee_name,\r\n            FLOOR(SUM(CEIL(TIMESTAMPDIFF(SECOND, date_log_in, date_log_out) / 60)) / 60) AS total_hours,\r\n            SUM(CEIL(TIMESTAMPDIFF(SECOND, date_log_in, date_log_out) / 60)) %% 60 AS total_minutes\r\n        FROM \r\n            `tabBranches Check IN OUT`\r\n        WHERE\r\n            date_log_in BETWEEN  %(frmdate)s AND %(todate)s\r\n        GROUP BY \r\n            employee_id\r\n    )\r\n\r\nSELECT \r\n    EM.name,\r\n    EM.employee_name,\r\n    (SELECT (et.total_hours + FLOOR(et.total_minutes / 60)) FROM EmployeeTotals et WHERE et.employee_id = EM.name) AS total_hours,\r\n    (SELECT COUNT(name) FROM `tabPurchase Invoice` PS WHERE docstatus = 1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code) AS no_of_invo,\r\n    (SELECT COUNT(item_code) FROM `tabPurchase Invoice Item` PSD WHERE docstatus = 1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code) AS no_of_items,\r\n    ROUND((\r\n        (SELECT COUNT(name) FROM `tabPurchase Invoice` PS WHERE docstatus = 1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code) /\r\n        (SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeTotals et WHERE et.employee_id = EM.name)\r\n    ), 2) AS invo_in_hour,\r\n    ROUND((\r\n        (SELECT COUNT(item_code) FROM `tabPurchase Invoice Item` PSD WHERE docstatus = 1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code) /\r\n        (SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeTotals et WHERE et.employee_id = EM.name)\r\n    ), 2) AS item_in_hour,\r\n    ROUND((\r\n        (SELECT COUNT(item_code) FROM `tabPurchase Invoice Item` PSD WHERE docstatus = 1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code) /\r\n        (SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeTotals et WHERE et.employee_id = EM.name)\r\n    ) /\r\n    (\r\n        (SELECT COUNT(name) FROM `tabPurchase Invoice` PS WHERE docstatus = 1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code) /\r\n        (SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeTotals et WHERE et.employee_id = EM.name)\r\n    ), 2) AS item_in_invo\r\nFROM \r\n    tabEmployee EM\r\nINNER JOIN \r\n    tabUser USR ON USR.name = EM.custom_user_code\r\nWHERE \r\n    designation IN ('\u0645\u062f\u062e\u0644 \u0628\u064a\u0627\u0646\u0627\u062a', '\u0645\u062f\u064a\u0631 \u0642\u0633\u0645 \u062f\u0627\u062a\u0627')\r\n",
+ "ref_doctype": "Item",
+ "report_name": "Data Entry Evaluation",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "stock adjstment role"
+  }
+ ]
+}

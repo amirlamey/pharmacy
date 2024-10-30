@@ -1,0 +1,111 @@
+{
+ "add_total_row": 0,
+ "columns": [
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Data",
+   "label": "Warehouse",
+   "width": 0
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Code",
+   "width": 0
+  },
+  {
+   "fieldname": "stock_uom",
+   "fieldtype": "Data",
+   "label": "UOM",
+   "width": 0
+  },
+  {
+   "fieldname": "item_expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date",
+   "width": 0
+  },
+  {
+   "fieldname": "actual_qty",
+   "fieldtype": "Float",
+   "label": "QTY",
+   "width": 0
+  }
+ ],
+ "creation": "2023-08-05 23:23:38.304636",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "itemcode",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "mandatory": 1,
+   "options": "Item",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "wareh",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "mandatory": 1,
+   "options": "Warehouse",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "expiryd",
+   "fieldtype": "Link",
+   "label": "item_expiry_date",
+   "mandatory": 1,
+   "options": "Item Expiry Date",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-02-09 15:19:47.712477",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Item Stock Parm Batch",
+ "owner": "bassem@elpernameg.com",
+ "prepared_report": 0,
+ "query": "SELECT \r\n      warehouse,item_code,stock_uom, item_expiry_date, SUM(actual_qty) AS qty \r\nFROM \r\n     `tabStock Ledger Entry` \r\n\r\n    \r\nWHERE is_cancelled = 0 \r\nAND (item_code = %(itemcode)s) \r\nAND (warehouse = %(wareh)s)\r\nAND (item_expiry_date = %(expiryd)s)\r\nGROUP BY warehouse,item_code,stock_uom, item_expiry_date\r\nHAVING SUM(actual_qty) > 0\r\n    ",
+ "ref_doctype": "Item",
+ "report_name": "Item Stock Parm Batch",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Item Manager"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "All"
+  },
+  {
+   "role": "Accounts Manager"
+  }
+ ]
+}

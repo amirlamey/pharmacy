@@ -1,0 +1,86 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-09-03 17:40:10.744435",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "wareh",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "mandatory": 1,
+   "options": "Warehouse",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-09-03 17:44:24.233652",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Item Not In Stock Adjustment Warehouse",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select \nitem_code\n,(select item_name from `tabItem` where item_code = BB.item_code) AS 'Item Name'\n,(select  max(price_list_rate) from `tabItem Price` where item_code = BB.item_code) AS 'Sales Price'\n,(actual_qty/(select max(conversion_factor) from `tabUOM Conversion Detail` where parent = BB.item_code)) AS 'QTY'\nfrom tabBin BB\nwhere item_code not in \n(select item_code from `tabStock Ledger Entry` AS SLE\n where voucher_type = 'Stock Entry'\n and voucher_no in (select name from `tabStock Entry` where stock_entry_type in ('Material Receipt','Material Issue') and docstatus=1)\n and docstatus=1\n and is_cancelled = 0\n and posting_date BETWEEN %(from_date)s AND %(to_date)s\n and warehouse= %(wareh)s )\n and item_code not in (select item_code from `tabItem` where disabled=1)",
+ "ref_doctype": "Item",
+ "report_name": "Item Not In Stock Adjustment Warehouse",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Item Manager"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "All"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Sales Manager"
+  }
+ ]
+}

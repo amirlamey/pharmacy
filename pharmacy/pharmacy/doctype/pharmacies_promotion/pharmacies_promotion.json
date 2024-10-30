@@ -1,0 +1,149 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-06-01 14:04:12.462721",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "promo_name",
+  "promo_description",
+  "type_of_promo",
+  "column_break_lxssa",
+  "start_date",
+  "end_date",
+  "section_break_ugwyo",
+  "no_of_item_promo",
+  "no_of_item_paid",
+  "no_of_item_gifts",
+  "discount_for_gifts",
+  "lowest_price",
+  "column_break_nppoo",
+  "brand_promo",
+  "item_promo",
+  "branch_promo"
+ ],
+ "fields": [
+  {
+   "fieldname": "promo_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Promo Name"
+  },
+  {
+   "fieldname": "promo_description",
+   "fieldtype": "Text",
+   "label": "Promo Description"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "type_of_promo",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type Of Promo",
+   "options": "Buy and Get\nItem Discount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_lxssa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "start_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "End Date"
+  },
+  {
+   "fieldname": "section_break_ugwyo",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "no_of_item_promo",
+   "fieldtype": "Int",
+   "label": "No Of Item Promo"
+  },
+  {
+   "fieldname": "no_of_item_paid",
+   "fieldtype": "Int",
+   "label": "No Of Item Paid"
+  },
+  {
+   "fieldname": "no_of_item_gifts",
+   "fieldtype": "Int",
+   "label": "No Of Item Gifts"
+  },
+  {
+   "default": "0",
+   "fieldname": "discount_for_gifts",
+   "fieldtype": "Percent",
+   "label": "Discount For Gifts"
+  },
+  {
+   "default": "0",
+   "fieldname": "lowest_price",
+   "fieldtype": "Check",
+   "label": "Lowest price"
+  },
+  {
+   "fieldname": "column_break_nppoo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "brand_promo",
+   "fieldtype": "Table",
+   "label": "Promo Brand",
+   "options": "Brand Promo"
+  },
+  {
+   "fieldname": "item_promo",
+   "fieldtype": "Table",
+   "label": "Promo Items",
+   "options": "Item Promo"
+  },
+  {
+   "fieldname": "branch_promo",
+   "fieldtype": "Table",
+   "label": "Promo Branches",
+   "options": "Branch Promo"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-06-13 14:11:21.103864",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Pharmacies Promotion",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

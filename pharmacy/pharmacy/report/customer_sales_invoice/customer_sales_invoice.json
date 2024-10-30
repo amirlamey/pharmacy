@@ -1,0 +1,62 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-10-22 21:55:36.139851",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "customer",
+   "mandatory": 1,
+   "options": "Customer",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-10-22 22:01:25.977905",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Customer Sales Invoice",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT \n    name,\n    pos_invoice_no,\n    custom_crm_order_no,\n    posting_date,\n    customer,\n    customer_name,\n    IF(is_return = 0, 'Sales', 'Return') AS `Type`,\n    set_warehouse,\n    base_total,\n    discount_amount,\n    net_total,\n    _order_type,\n    delivery_type,\n    shift,\n    (SELECT employee_name FROM tabEmployee WHERE name = custom_sales_employee) AS Salesman,\n    (SELECT employee_name FROM tabEmployee WHERE name = custom_call_center_employee) AS Callcenteragent\nFROM \n    `tabSales Invoice`\nWHERE  posting_date BETWEEN %(from_date)s AND %(to_date)s\nAND customer = %(customer)s \nand docstatus =1",
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Customer Sales Invoice",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "stock adjstment role"
+  }
+ ]
+}

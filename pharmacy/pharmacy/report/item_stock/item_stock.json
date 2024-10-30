@@ -1,0 +1,101 @@
+{
+ "add_total_row": 0,
+ "columns": [
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Data",
+   "label": "Warehouse",
+   "width": 0
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Code",
+   "width": 0
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "width": 0
+  },
+  {
+   "fieldname": "stock_uom",
+   "fieldtype": "Data",
+   "label": "UOM",
+   "width": 0
+  },
+  {
+   "fieldname": "item_expiry_date",
+   "fieldtype": "Data",
+   "label": "Expiry Date",
+   "width": 0
+  },
+  {
+   "fieldname": "actual_qty",
+   "fieldtype": "Float",
+   "label": "QTY",
+   "width": 0
+  }
+ ],
+ "creation": "2023-07-24 18:50:24.120369",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "itemcode",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "mandatory": 1,
+   "options": "Item",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-07-30 16:43:21.078168",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Item Stock",
+ "owner": "bassem@elpernameg.com",
+ "prepared_report": 0,
+ "query": "   SELECT \r\n      warehouse,`tabStock Ledger Entry`.`item_code` AS `Item Code`\r\n      ,`tabItem`.`item_name` AS `Item Name`\r\n      ,`tabItem`.`sales_uom` AS `stock_uom`\r\n      , item_expiry_date\r\n      \r\n      ,ROUND(\r\n        SUM(actual_qty) / COALESCE(\r\n            (\r\n                SELECT conversion_factor\r\n                FROM `tabUOM Conversion Detail` ucd\r\n                WHERE ucd.parent = `tabStock Ledger Entry`.`item_code`\r\n                AND ucd.uom = `tabItem`.`sales_uom`\r\n            ), 1\r\n        ),\r\n        2  -- Two decimal places\r\n    ) AS `Qty`\r\nFROM \r\n     `tabStock Ledger Entry` \r\n LEFT JOIN \r\n    `tabItem` ON (`tabStock Ledger Entry`.`item_code` = `tabItem`.`item_code`)   \r\nWHERE is_cancelled = 0 \r\nAND (`tabStock Ledger Entry`.`item_code` = %(itemcode)s) \r\nGROUP BY warehouse,`tabStock Ledger Entry`.`item_code`,`tabStock Ledger Entry`.`stock_uom`, item_expiry_date\r\nHAVING SUM(actual_qty) > 0\r\n    \r\n   \r\n    \r\n    \r\n   \r\n    ",
+ "ref_doctype": "Item",
+ "report_name": "Item Stock",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Item Manager"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "All"
+  },
+  {
+   "role": "Accounts Manager"
+  }
+ ]
+}

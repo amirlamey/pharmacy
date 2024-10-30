@@ -1,0 +1,63 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-08-25 17:02:58.989488",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "frmdate",
+   "fieldtype": "Datetime",
+   "label": "From Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "todate",
+   "fieldtype": "Datetime",
+   "label": "To Date",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-08-25 17:44:11.418115",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Data Entry Employee Valuation",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "WITH EmployeeLogs AS (\r\n        SELECT \r\n            employee_id,\r\n            (SELECT employee_name FROM `tabEmployee` WHERE `tabEmployee`.`name` = employee_id) AS employee_name,\r\n            branch,\r\n            log_type_in,\r\n            date_log_in,\r\n            log_type_out,\r\n            date_log_out,\r\n            TIMESTAMPDIFF(HOUR, date_log_in, date_log_out) AS hours,\r\n            MOD(TIMESTAMPDIFF(MINUTE, date_log_in, date_log_out), 60) AS minutes\r\n        FROM \r\n            `tabBranches Check IN OUT`\r\n        WHERE\r\n            date_log_in BETWEEN %(frmdate)s AND %(todate)s\r\n        ORDER BY \r\n            employee_id, date_log_in\r\n    ),\r\n    EmployeeTotals AS (\r\n        SELECT \r\n            employee_id,\r\n            (SELECT employee_name FROM `tabEmployee` WHERE `tabEmployee`.`name` = employee_id) AS employee_name,\r\n            SUM(TIMESTAMPDIFF(HOUR, date_log_in, date_log_out)) AS total_hours,\r\n            SUM(TIMESTAMPDIFF(MINUTE, date_log_in, date_log_out) % 60) AS total_minutes\r\n        FROM \r\n            `tabBranches Check IN OUT`\r\n        WHERE\r\n            date_log_in BETWEEN BETWEEN %(frmdate)s AND %(todate)s\r\n        GROUP BY \r\n            employee_id\r\n    )\r\n\r\n    \r\n    \r\n\r\n\r\nselect EM.name\r\n,EM.employee_name\r\n,(SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeLogs el JOIN EmployeeTotals et ON el.employee_id = et.employee_id and el.employee_id =EM.name)AS total_hours \r\n,(SELECT count(name) FROM `tabPurchase Invoice` PS where docstatus =1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.user_id) AS no_of_invo\r\n,(SELECT count(item_code) FROM `tabPurchase Invoice Item` PSD where docstatus =1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code) AS no_of_items\r\n,((SELECT count(name) FROM `tabPurchase Invoice` PS where docstatus =1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code)/\r\n(SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeLogs el JOIN EmployeeTotals et ON EM.custom_user_code = et.employee_id)) AS invo_in_hour\r\n,((SELECT count(item_code) FROM `tabPurchase Invoice Item` PSD where docstatus =1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code)/\r\n(SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeLogs el JOIN EmployeeTotals et ON EM.custom_user_code = et.employee_id)) AS item_in_hour\r\n,(((SELECT count(item_code) FROM `tabPurchase Invoice Item` PSD where docstatus =1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code)/\r\n(SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeLogs el JOIN EmployeeTotals et ON EM.custom_user_code = et.employee_id))/\r\n((SELECT count(name) FROM `tabPurchase Invoice` PS where docstatus =1 AND (creation BETWEEN %(frmdate)s AND %(todate)s) AND owner = EM.custom_user_code)/\r\n(SELECT et.total_hours + FLOOR(et.total_minutes / 60) FROM EmployeeLogs el JOIN EmployeeTotals et ON EM.custom_user_code = et.employee_id))) AS item_in_invo\r\nfrom tabEmployee EM\r\ninner join tabUser USR on USR.name = EM.custom_user_code\r\nwhere designation = '\u0645\u062f\u062e\u0644 \u0628\u064a\u0627\u0646\u0627\u062a'",
+ "ref_doctype": "Warehouse",
+ "report_name": "Data Entry Employee Valuation",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "Manufacturing Manager"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Supplier & Item & Purchase & Promotion"
+  },
+  {
+   "role": "Branch Ghobrial"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Purchase Manager"
+  }
+ ]
+}

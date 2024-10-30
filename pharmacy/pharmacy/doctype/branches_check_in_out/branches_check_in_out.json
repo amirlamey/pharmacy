@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-06-26 15:30:35.686451",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "id",
+  "employee_id",
+  "log_type_in",
+  "date_log_in",
+  "log_type_out",
+  "date_log_out",
+  "branch"
+ ],
+ "fields": [
+  {
+   "fieldname": "id",
+   "fieldtype": "Int",
+   "label": "Id"
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Link",
+   "label": "Employee Id",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "log_type_in",
+   "fieldtype": "Data",
+   "label": "Log Type In"
+  },
+  {
+   "fieldname": "date_log_in",
+   "fieldtype": "Datetime",
+   "label": "Date Log In"
+  },
+  {
+   "fieldname": "log_type_out",
+   "fieldtype": "Data",
+   "label": "Log Type Out"
+  },
+  {
+   "fieldname": "date_log_out",
+   "fieldtype": "Datetime",
+   "label": "Date Log Out"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Warehouse"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-06-26 19:07:05.797908",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Branches Check IN OUT",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

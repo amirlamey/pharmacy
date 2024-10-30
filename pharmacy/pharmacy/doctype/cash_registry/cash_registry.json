@@ -1,0 +1,208 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-03-20 01:05:34.150577",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "store",
+  "registryno",
+  "cashierid",
+  "opendate",
+  "opentime",
+  "openuserid",
+  "open_user_name",
+  "closedate",
+  "closetime",
+  "closeuserid",
+  "totalcashopen",
+  "totalvisamvm",
+  "totalcashmvm",
+  "totalvisaclose",
+  "totalcashclose",
+  "macaddress",
+  "cashleft",
+  "shift_id",
+  "shift_day_date",
+  "erppayno",
+  "totalvisarecieptno",
+  "totalcontractrecieptno",
+  "totalvisarecieptnomvm",
+  "totalcontractrecieptnomvm",
+  "net_cash",
+  "net_visa",
+  "net_reciept_contract",
+  "net_reciept_visa"
+ ],
+ "fields": [
+  {
+   "fieldname": "store",
+   "fieldtype": "Link",
+   "label": "store",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "registryno",
+   "fieldtype": "Data",
+   "label": "registryno"
+  },
+  {
+   "fieldname": "cashierid",
+   "fieldtype": "Link",
+   "label": "cashierid",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "opendate",
+   "fieldtype": "Date",
+   "label": "opendate"
+  },
+  {
+   "fieldname": "opentime",
+   "fieldtype": "Time",
+   "label": "opentime"
+  },
+  {
+   "fieldname": "openuserid",
+   "fieldtype": "Link",
+   "label": "openuserid",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "closedate",
+   "fieldtype": "Date",
+   "label": "closedate"
+  },
+  {
+   "fieldname": "closetime",
+   "fieldtype": "Time",
+   "label": "closetime"
+  },
+  {
+   "fieldname": "closeuserid",
+   "fieldtype": "Link",
+   "label": "closeuserid",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "totalcashopen",
+   "fieldtype": "Float",
+   "label": "totalcashopen"
+  },
+  {
+   "fieldname": "totalvisamvm",
+   "fieldtype": "Float",
+   "label": "totalvisamvm"
+  },
+  {
+   "fieldname": "totalcashmvm",
+   "fieldtype": "Float",
+   "label": "totalcashmvm"
+  },
+  {
+   "fieldname": "totalvisaclose",
+   "fieldtype": "Float",
+   "label": "totalvisaclose"
+  },
+  {
+   "fieldname": "totalcashclose",
+   "fieldtype": "Float",
+   "label": "totalcashclose"
+  },
+  {
+   "fieldname": "macaddress",
+   "fieldtype": "Data",
+   "label": "macaddress"
+  },
+  {
+   "fieldname": "cashleft",
+   "fieldtype": "Float",
+   "label": "cashleft"
+  },
+  {
+   "fieldname": "shift_id",
+   "fieldtype": "Data",
+   "label": "shift_id"
+  },
+  {
+   "fieldname": "shift_day_date",
+   "fieldtype": "Date",
+   "label": "shift_day_date"
+  },
+  {
+   "fieldname": "erppayno",
+   "fieldtype": "Data",
+   "label": "ERPPayNo"
+  },
+  {
+   "fieldname": "totalvisarecieptno",
+   "fieldtype": "Int",
+   "label": "TotalVisaRecieptNo"
+  },
+  {
+   "fieldname": "totalcontractrecieptno",
+   "fieldtype": "Int",
+   "label": "TotalContractRecieptNo"
+  },
+  {
+   "fieldname": "totalvisarecieptnomvm",
+   "fieldtype": "Int",
+   "label": "TotalVisaRecieptNoMVM"
+  },
+  {
+   "fieldname": "totalcontractrecieptnomvm",
+   "fieldtype": "Int",
+   "label": "TotalContractRecieptNoMVM"
+  },
+  {
+   "fieldname": "net_cash",
+   "fieldtype": "Float",
+   "label": "Net Cash"
+  },
+  {
+   "fieldname": "net_visa",
+   "fieldtype": "Float",
+   "label": "Net Visa"
+  },
+  {
+   "fieldname": "net_reciept_contract",
+   "fieldtype": "Int",
+   "label": "Net Reciept Contract"
+  },
+  {
+   "fieldname": "net_reciept_visa",
+   "fieldtype": "Int",
+   "label": "Net Reciept Visa"
+  },
+  {
+   "fetch_from": "openuserid.employee_name",
+   "fieldname": "open_user_name",
+   "fieldtype": "Data",
+   "label": "Open User Name"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-25 14:32:24.772376",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Cash Registry",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,42 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-06-30 19:30:20.166884",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Datetime",
+   "label": "From",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Datetime",
+   "label": "To",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-06-30 20:34:48.045204",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Employee Hours",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "WITH EmployeeLogs AS (\r\n    SELECT \r\n        e1.employee_id,\r\n        (SELECT employee_name FROM _b533f5fdd65aaf8c.`tabEmployee` WHERE _b533f5fdd65aaf8c.`tabEmployee`.`name` = e1.employee_id) AS `Employee Name`,\r\n        log_type_in,\r\n        date_log_in,\r\n        log_type_out,\r\n        date_log_out,\r\n        TIMESTAMPDIFF(HOUR, date_log_in, date_log_out) AS hours,\r\n        MOD(TIMESTAMPDIFF(MINUTE, date_log_in, date_log_out), 60) AS minutes\r\n    FROM \r\n        _b533f5fdd65aaf8c.`tabBranches Check IN OUT` e1\r\n    WHERE\r\n        date_log_out IS NOT NULL\r\n        AND date_log_in BETWEEN COALESCE(%(from_date)s, '1900-01-01') AND COALESCE(%(to_date)s, CURDATE())\r\n    ORDER BY \r\n        e1.employee_id, date_log_in\r\n),\r\nEmployeeTotals AS (\r\n    SELECT \r\n        e2.employee_id,\r\n        (SELECT employee_name FROM _b533f5fdd65aaf8c.`tabEmployee` WHERE _b533f5fdd65aaf8c.`tabEmployee`.`name` = e2.employee_id) AS `Employee Name`,\r\n        SUM(TIMESTAMPDIFF(HOUR, date_log_in, date_log_out)) AS total_hours,\r\n        SUM(TIMESTAMPDIFF(MINUTE, date_log_in, date_log_out) % 60) AS total_minutes\r\n    FROM \r\n        _b533f5fdd65aaf8c.`tabBranches Check IN OUT` e2\r\n    WHERE\r\n        date_log_out IS NOT NULL\r\n        AND date_log_in BETWEEN COALESCE(%(from_date)s, '1900-01-01') AND COALESCE(%(to_date)s, CURDATE())\r\n    GROUP BY \r\n        e2.employee_id\r\n)\r\n\r\nSELECT \r\n    el.employee_id,\r\n    (SELECT employee_name FROM _b533f5fdd65aaf8c.`tabEmployee` WHERE _b533f5fdd65aaf8c.`tabEmployee`.`name` = el.employee_id) AS `Employee Name`,\r\n    el.log_type_in,\r\n    el.date_log_in,\r\n    el.log_type_out,\r\n    el.date_log_out,\r\n    el.hours,\r\n    el.minutes,\r\n    et.total_hours + FLOOR(et.total_minutes / 60) AS total_hours,\r\n    MOD(et.total_minutes, 60) AS total_minutes\r\nFROM \r\n    EmployeeLogs el\r\nJOIN \r\n    EmployeeTotals et ON el.employee_id = et.employee_id\r\nORDER BY \r\n    el.employee_id, el.date_log_in;\r\n",
+ "ref_doctype": "Branches Check IN OUT",
+ "report_name": "Employee Hours",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ]
+}

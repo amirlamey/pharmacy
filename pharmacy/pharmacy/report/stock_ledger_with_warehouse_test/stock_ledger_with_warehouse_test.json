@@ -1,0 +1,94 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-07-21 18:37:21.427112",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "itm",
+   "fieldtype": "Link",
+   "label": "Item",
+   "mandatory": 1,
+   "options": "Item",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "wareh",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "mandatory": 1,
+   "options": "Warehouse",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-07-21 18:40:37.608629",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Stock Ledger With Warehouse test",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\r\n    LET.`posting_date` AS `Date`,\r\n    LET.`item_code` AS `Item`,\r\n    `tabItem`.`item_name` AS `Item Name`,\r\n    LET.`item_expiry_date` AS `Expiry Date`,\r\n    (SELECT price_list_rate \r\n     FROM `tabItem Price` ip\r\n     WHERE ip.selling = 1 AND ip.item_code = LET.item_code \r\n     LIMIT 1) AS \"Sales Price\",\r\n    LET.`voucher_no` AS `Voucher #`,\r\n    CASE \r\n        WHEN LET.`actual_qty` > 0 THEN ROUND(LET.`actual_qty` / COALESCE((SELECT conversion_factor FROM `tabUOM Conversion Detail` ucd WHERE ucd.parent = LET.item_code AND ucd.uom = `tabItem`.sales_uom LIMIT 1), 1), 2)\r\n        ELSE NULL\r\n    END AS `In Qty`,\r\n    CASE \r\n        WHEN LET.`actual_qty` < 0 THEN ROUND(LET.`actual_qty` / COALESCE((SELECT conversion_factor FROM `tabUOM Conversion Detail` ucd WHERE ucd.parent = LET.item_code AND ucd.uom = `tabItem`.sales_uom LIMIT 1), 1), 2)\r\n        ELSE NULL\r\n    END AS `Out Qty`,\r\n    ROUND(LET.`qty_after_transaction` / COALESCE((SELECT conversion_factor FROM `tabUOM Conversion Detail` ucd WHERE ucd.parent = LET.item_code AND ucd.uom = `tabItem`.sales_uom LIMIT 1), 1), 2) AS `Balance Qty`,\r\n    `tabItem`.`sales_uom` AS `Sales UOM`,\r\n    (CASE \r\n        WHEN LET.voucher_type = 'Stock Entry' THEN \r\n            (SELECT `from_warehouse` \r\n             FROM `tabStock Entry` se \r\n             WHERE se.`name` = \r\n                 (SELECT `outgoing_stock_entry` \r\n                  FROM `tabStock Entry` \r\n                  WHERE `name` = LET.voucher_no \r\n                    AND LET.voucher_type = 'Stock Entry')\r\n            )\r\n        ELSE NULL\r\n    END) AS `From Warehouse`,\r\n    (SELECT `to_warehouse` \r\n     FROM `tabStock Entry` se\r\n     WHERE se.`name` = LET.`voucher_no`\r\n       AND LET.`voucher_type` = 'Stock Entry'\r\n    ) AS `To Warehouse`,\r\n    LET.`warehouse` AS `Warehouse`,\r\n    LET.`voucher_type` AS `Transaction Type`,\r\n    CASE \r\n        WHEN LET.`voucher_type` = 'Stock Entry' THEN `tabStock Entry`.`owner`\r\n        WHEN LET.`voucher_type` = 'Sales Invoice' THEN (SELECT employee_name FROM `tabEmployee` e WHERE e.`name` = `tabSales Invoice`.`custom_cashier_employee`)\r\n        WHEN LET.`voucher_type` = 'Purchase Invoice' THEN `tabPurchase Invoice`.`owner`\r\n        ELSE NULL\r\n    END AS `User`,\r\n    CASE\r\n        WHEN LET.`voucher_type` = 'Stock Entry' THEN `tabStock Entry`.`custom_pos_employee_name`\r\n        ELSE NULL\r\n    END AS `POS User Stock Entry`\r\nFROM\r\n    `tabStock Ledger Entry` LET\r\nJOIN\r\n    `tabItem` ON LET.`item_code` = `tabItem`.`item_code`\r\nLEFT JOIN\r\n    `tabStock Entry` ON LET.`voucher_no` = `tabStock Entry`.`name` \r\nLEFT JOIN\r\n    `tabSales Invoice` ON LET.`voucher_no` = `tabSales Invoice`.`name` \r\nLEFT JOIN\r\n    `tabPurchase Invoice` ON LET.`voucher_no` = `tabPurchase Invoice`.`name` \r\nWHERE\r\n    LET.`posting_date` BETWEEN %(from_date)s AND %(to_date)s\r\n    AND (LET.`item_code` = %(itm)s OR %(itm)s IS NULL OR %(itm)s = '')\r\n    AND (LET.`warehouse` = %(wareh)s OR %(wareh)s IS NULL OR %(wareh)s = '')\r\n    AND LET.`is_cancelled` = 0\r\nORDER BY\r\n    LET.`posting_date`;\r\n",
+ "ref_doctype": "Item",
+ "report_name": "Stock Ledger With Warehouse test",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Item Manager"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "All"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Sales Manager"
+  }
+ ]
+}

@@ -1,0 +1,27 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-06-30 19:29:05.113334",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{}",
+ "letterhead": null,
+ "modified": "2024-06-30 19:29:05.113334",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Total Employee Hours",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Branches Check IN OUT",
+ "report_name": "Total Employee Hours",
+ "report_type": "Report Builder",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ]
+}

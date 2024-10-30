@@ -1,0 +1,86 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2024-08-27 15:52:33.590862",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 1,
+   "options": "",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "wareh",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "mandatory": 1,
+   "options": "Warehouse",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2024-08-27 17:38:05.376433",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Stock Adjustment Items",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "WITH stock_entries AS (\r\n    SELECT \r\n        name,\r\n        stock_entry_type,\r\n        posting_date\r\n    FROM \r\n        `tabStock Entry`\r\n    WHERE \r\n        stock_entry_type IN ('Material Issue', 'Material Receipt')\r\n        AND posting_date BETWEEN %(from_date)s AND %(to_date)s\r\n        AND docstatus = 1\r\n),\r\nstock_details AS (\r\n    SELECT\r\n        item_code,\r\n        item_name,\r\n        COALESCE(s_warehouse, t_warehouse) AS warehouse,\r\n        COALESCE(item_expiry_date, to_item_expiry_date) AS item_expiry_date,\r\n        uom,\r\n        sales_price,\r\n        qty,\r\n        parent\r\n    FROM\r\n        `tabStock Entry Detail`\r\n    WHERE\r\n        (s_warehouse = %(wareh)s OR t_warehouse = %(wareh)s OR s_warehouse IS NULL OR t_warehouse IS NULL)\r\n)\r\nSELECT \r\n    SD.item_code AS `Item Code`,\r\n    SD.item_name AS `Item Name`,\r\n    SD.uom AS `UOM`,\r\n    SD.sales_price AS `Sales Price`,\r\n    SD.item_expiry_date AS `Expiry Date`,\r\n    SUM(CASE WHEN SE.stock_entry_type = 'Material Issue' THEN SD.qty * -1 ELSE 0 END) AS `Min Qty`,\r\n    SUM(CASE WHEN SE.stock_entry_type = 'Material Receipt' THEN SD.qty ELSE 0 END) AS `Add Qty`,\r\n    SUM(CASE WHEN SE.stock_entry_type = 'Material Issue' THEN SD.qty * -1 ELSE SD.qty END) AS `Net Qty`\r\nFROM\r\n    stock_details SD\r\n    JOIN stock_entries SE ON SD.parent = SE.name\r\nWHERE\r\n    SD.warehouse = %(wareh)s\r\nGROUP BY \r\n    SD.item_code,\r\n    SD.item_name,\r\n    SD.uom,\r\n    SD.sales_price,\r\n    SD.item_expiry_date\r\nORDER BY\r\n    SD.item_code, SD.item_name;\r\n",
+ "ref_doctype": "Item",
+ "report_name": "Stock Adjustment Items",
+ "report_script": "",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Item Manager"
+  },
+  {
+   "role": "Stock Manager"
+  },
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Purchase User"
+  },
+  {
+   "role": "Maintenance User"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "All"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Sales Manager"
+  }
+ ]
+}

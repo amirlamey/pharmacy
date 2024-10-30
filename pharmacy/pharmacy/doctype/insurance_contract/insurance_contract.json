@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2023-05-11 16:41:02.091481",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break1",
+  "contract_name",
+  "customer",
+  "discount_applicable",
+  "paying_company_applicable",
+  "invoice_max_value",
+  "disable",
+  "column_break2",
+  "origin_group",
+  "contract_description",
+  "customer_ratio"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "contract_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Contract Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "discount_applicable",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Discount Applicable",
+   "options": "Company\nCompany and Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "paying_company_applicable",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Paying Company Applicable",
+   "options": "After Discount\nBefore Discount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "invoice_max_value",
+   "fieldtype": "Float",
+   "label": "Invoice Max Value"
+  },
+  {
+   "default": "0",
+   "fieldname": "disable",
+   "fieldtype": "Check",
+   "label": "Disable"
+  },
+  {
+   "fieldname": "column_break2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "origin_group",
+   "fieldtype": "Table",
+   "label": " Origin Group",
+   "options": "Origin Discount",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "contract_description",
+   "fieldtype": "HTML",
+   "label": "Contract Description"
+  },
+  {
+   "fieldname": "customer_ratio",
+   "fieldtype": "Table",
+   "label": "Contract Ratio",
+   "options": "Customer Ratio"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-10-31 00:42:36.809429",
+ "modified_by": "Administrator",
+ "module": "Pharmacy",
+ "name": "Insurance Contract",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
